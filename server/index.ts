@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express, { type Request, Response, NextFunction } from "express";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -68,6 +70,6 @@ app.use((req, res, next) => {
   const port = 5000;
   server.listen(port, "0.0.0.0", () => {
     log(`serving on port ${port}`);
-    log(`Client root: ${path.resolve(__dirname, '../client')}`);
+    log(`Client root: ${path.resolve(__dirname, "../client")}`);
   });
 })();
