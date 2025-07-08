@@ -13,7 +13,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Google OAuth 설정
   setupGoogleAuth(app);
 
-  // Auth routes
+  // Replit Auth routes (disabled for now - using Google OAuth)
+  /*
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
@@ -24,6 +25,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch user" });
     }
   });
+  */
 
   // Login endpoint to register user (token-based)
   app.post("/api/auth/login", async (req, res) => {
@@ -53,35 +55,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get current user (token-based)
-  app.get("/api/auth/user", async (req, res) => {
-    try {
-      const authHeader = req.headers.authorization;
-      const token = authHeader?.replace('Bearer ', '');
-      
-      if (!token) {
-        return res.status(401).json({ error: "Not authenticated" });
-      }
-
-      // Verify token with Google API
-      const response = await fetch(`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${token}`);
-      if (!response.ok) {
-        return res.status(401).json({ error: "Invalid token" });
-      }
-
-      const googleUser = await response.json();
-      const user = await storage.getUser(googleUser.id);
-      
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-
-      res.json(user);
-    } catch (error) {
-      console.error("Get user error:", error);
-      res.status(500).json({ error: "Failed to get user" });
-    }
-  });
+  // Get current user route is handled by Google OAuth in googleAuth.ts
 
   // Logout endpoint
   app.post("/api/auth/logout", (req, res) => {

@@ -99,7 +99,7 @@ export function setupGoogleAuth(app: Express) {
   });
 
   // 사용자 정보 조회 라우트
-  app.get("/api/auth/user", (req, res) => {
+  app.get("/api/auth/user", (req: any, res) => {
     if (req.isAuthenticated() && req.user) {
       res.json(req.user);
     } else {
