@@ -11,13 +11,20 @@ const clientID = process.env.GOOGLE_CLIENT_ID as string;
 const clientSecret = process.env.GOOGLE_CLIENT_SECRET as string;
 
 export function setupGoogleAuth(app: Express) {
+  // 현재 도메인을 가져와서 콜백 URL 생성
+  const domain = process.env.REPLIT_DOMAINS?.split(',')[0] || 'localhost:5000';
+  const protocol = domain.includes('localhost') ? 'http' : 'https';
+  const callbackURL = `${protocol}://${domain}/api/auth/google/callback`;
+  
+  console.log('Google OAuth callback URL:', callbackURL);
+  
   // 구글 OAuth 전략 설정
   passport.use(
     new GoogleStrategy(
       {
         clientID,
         clientSecret,
-        callbackURL: "/api/auth/google/callback",
+        callbackURL,
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
